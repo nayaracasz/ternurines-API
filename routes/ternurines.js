@@ -3,9 +3,10 @@ const router = express.Router();
 const mysql = require('mysql2');
 
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    database: 'SylvanianFamilies',
+    host: process.env.MYSQLHOST || 'localhost',
+    user: process.env.MYSQLUSER || 'root',
+    password: process.env.MYSQL_ROOT_PASSWORD || '',
+    database: process.env.MYSQLDATABASE || 'sylvanianfamilies',
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 10,
