@@ -1,0 +1,141 @@
+---
+openapi: '3.0.0'
+info:
+  title: 'Ternurines API'
+  version: '1.0.0'
+  description: 'Bienvenido al repositorio de la API de Ternurines. Esta API proporciona una manera sencilla de gestionar y obtener información sobre ternurines, pequeñas criaturas adorables. 
+  
+  Repositorio: [nayaracasz/ternurines-API](https://github.com/nayaracasz/ternurines-API)'
+servers:
+  - url: http://localhost:3000
+tags:
+  name: Characters
+  description: Sylvanian Families' characters
+components:
+  schemas:
+    Character:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Character's name
+          example: Avril Husky
+        family:
+          type: string
+          description: Family that the character belongs to
+          example: Husky
+        role:
+          type: string
+          description: The role the character has in the family
+          example: Mother
+        description:
+          type: string
+          description: Some description about the character
+          example: Avril Husky loves her jewellery. Whenever she goes shopping she can’t help but add to her collection! From rings to bracelets, Avril has it all!
+        image:
+          type: string
+          description: Image URL of the character
+          example: https://static.wikia.nocookie.net/sylvanian/images/8/8c/Avril_Husky_%285636%29.jpg/revision/latest?cb=20220116181311
+paths:
+  /characters:
+    get:
+      tags:
+        - Characters
+      summary: All the Sylvanian Families' characters
+      description: Returns every character in the server
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+        '404':
+          description: No data found
+    put:
+      tags:
+        - Characters
+      summary: Update of a existing character
+      requestBody:
+        description: Update an existing character in the server
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Character'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+        '400':
+          description: At least 1 field for modifying the character
+        '500':
+          description: Not possible to modify the character
+    post:
+      tags:
+        - Characters
+      summary: Add a new character to the server
+      requestBody:
+        description: Create a new pcharacter in the server
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Character'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+        '400':
+          description: Enter all the required data to add a new character
+        '500':
+          description: Not possible to add the character
+  /characters/{characterId}:
+    get:
+      tags:
+        - Characters
+      summary: Find character by ID
+      description: Returns a single character
+      parameters:
+        - name: characterId 
+          in: path
+          description: ID of character to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:          
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Character not found
+    delete:
+      tags:
+        - Characters
+      summary: Deletes a character
+      parameters:
+        - name: characterId 
+          in: path
+          description: ID of character to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Enter a character ID to delete
+        '500':
+          description: Invalid character ID
