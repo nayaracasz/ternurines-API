@@ -3,7 +3,7 @@ const router = express.Router();
 const mysql = require('mysql2');
 const envar = require('../src/config.js');
 
-const pool = mysql.createPool({
+const mysqlConnection = mysql.createConnection({
     host: envar.DB_HOST,
     user: envar.DB_USER,
     password: envar.DB_PASSWORD,
@@ -11,12 +11,12 @@ const pool = mysql.createPool({
     port: envar.DB_PORT
 });
 
-pool.getConnection((err, connection) => {
+mysqlConnection.connect((err, connection) => {
     if (err) {
       console.error('Error connecting to the database:', err.message);
     } else {
       console.log('Successfully connected to the database');
-      connection.release();
+    //   connection.release();
     }
 });
 
@@ -30,7 +30,7 @@ router.get('/characters/:CharacterID?', (req, res, next) => {
             sql += ` WHERE CharacterID = ?`;
             params.push(characterID);
         }
-        pool.execute(
+        mysqlConnection.query(
             sql, params,
             function(err, results, fields) {
                 console.log(results);
@@ -56,7 +56,7 @@ router.post('/characters', (req, res, next) => {
             res.status(400).send('Se pide ingresar todos los datos para agregar un nuevo personaje');
             return;
         }
-        pool.execute(sql, params, function(err, results, fields){
+        mysqlConnection.query(sql, params, function(err, results, fields){
             console.log(results);
             console.log(fields);
             if(err){
@@ -81,7 +81,7 @@ router.put('/characters/:CharacterID?', (req, res, next) => {
         res.status(400).send('Se pide al menos un campo para modificar un personaje');
         return;
     }
-    pool.query(sql, [nuevosDatos, characterID], function(err, results, fields){
+    mysqlConnection.query(sql, [nuevosDatos, characterID], function(err, results, fields){
         if(err){
             res.status(500).json({ error: 'No es posible modificar el personaje' });
             return;
@@ -99,7 +99,7 @@ router.delete('/characters/:CharacterID?', (req, res, next) => {
             res.status(400).send('Se debe colocar un ID para eliminar un personaje.');
             return;
         }
-        pool.execute(sql, function(err, results, fields) {
+        mysqlConnection.query(sql, function(err, results, fields) {
             console.log(results);
             if(err) {
                 res.status(500).json({ error: 'Error al eliminar el personaje' });
