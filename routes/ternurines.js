@@ -1,20 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2');
+const envar = require('../src/config.js');
 
 const pool = mysql.createPool({
-    host: process.env.MYSQLHOST || 'localhost',
-    user: process.env.MYSQLUSER || 'root',
-    password: process.env.MYSQL_ROOT_PASSWORD || '',
-    database: process.env.MYSQLDATABASE || 'sylvanianfamilies',
-    waitForConnections: true,
-    connectionLimit: 10,
-    maxIdle: 10,
-    idleTimeout: 60000,
-    queueLimit: 0,
-    enableKeepAlive: true,
-    keepAliveInitialDelay: 0,
-  });
+    host: envar.DB_HOST,
+    user: envar.DB_USER,
+    password: envar.DB_PASSWORD,
+    database: envar.DB_DATABASE,
+    port: envar.DB_PORT
+});
+
+pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error connecting to the database:', err.message);
+    } else {
+      console.log('Successfully connected to the database');
+      connection.release();
+    }
+});
 
 router.get('/characters/:CharacterID?', (req, res, next) => {
     try{

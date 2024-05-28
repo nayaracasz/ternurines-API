@@ -6,9 +6,10 @@ const path = require('path');
 const fs = require('fs');
 const yaml = require('yamljs');
 const ternurinesRouter = require('../routes/ternurines.js');
+const envar = require('./config.js');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = envar.PORT || 3000;
 const swaggerDocs = yaml.load(path.join(__dirname, '../docs/apidocs.yaml'));
 const theme = new SwaggerTheme();
 const options = {
