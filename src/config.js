@@ -1,5 +1,3 @@
-const env = require('dotenv');
-env.config();
 const PORT = process.env.PORT || 3000;
 const DB_USER = process.env.DB_USER || 'root';
 const DB_PASSWORD = process.env.DB_PASSWORD;
