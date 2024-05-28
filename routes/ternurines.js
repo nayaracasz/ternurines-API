@@ -3,8 +3,7 @@ const router = express.Router();
 const mysql = require('mysql2');
 const envar = require('../src/config.js');
 
-const pool = mysql.createPoo
-l({
+const pool = mysql.createPool({
     host: envar.DB_HOST,
     user: envar.DB_USER,
     password: envar.DB_PASSWORD,
