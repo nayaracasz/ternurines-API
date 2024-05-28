@@ -3,7 +3,8 @@ const router = express.Router();
 const mysql = require('mysql2');
 const envar = require('../src/config.js');
 
-const mysqlConnection = mysql.createConnection({
+const pool = mysql.createPoo
+l({
     host: envar.DB_HOST,
     user: envar.DB_USER,
     password: envar.DB_PASSWORD,
@@ -11,26 +12,26 @@ const mysqlConnection = mysql.createConnection({
     port: envar.DB_PORT
 });
 
-mysqlConnection.connect((err, connection) => {
+pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error connecting to the database:', err.message);
     } else {
       console.log('Successfully connected to the database');
-    //   connection.release();
+      connection.release();
     }
 });
 
 router.get('/characters/:CharacterID?', (req, res, next) => {
     try{
         const characterID = req.params.CharacterID;
-        let sql = `SELECT * FROM Characters`;
+        let sql = `SELECT * FROM characters`;
         let params = [];
     
         if(characterID){
             sql += ` WHERE CharacterID = ?`;
             params.push(characterID);
         }
-        mysqlConnection.query(
+        pool.execute(
             sql, params,
             function(err, results, fields) {
                 console.log(results);
@@ -51,12 +52,12 @@ router.post('/characters', (req, res, next) => {
     try {
         const {name, family, role, description, image} = req.body;
         let params = [name, family, role, description, image];
-        let sql = `INSERT INTO Characters (CharacterName, FamilyName, Role, Description, Image) values (?, ?, ?, ?, ?)`;
+        let sql = `INSERT INTO characters (CharacterName, FamilyName, Role, Description, Image) values (?, ?, ?, ?, ?)`;
         if(!name || !family || !role || !description || !image){
             res.status(400).send('Se pide ingresar todos los datos para agregar un nuevo personaje');
             return;
         }
-        mysqlConnection.query(sql, params, function(err, results, fields){
+        pool.execute(sql, params, function(err, results, fields){
             console.log(results);
             console.log(fields);
             if(err){
@@ -73,7 +74,7 @@ router.post('/characters', (req, res, next) => {
 
 router.put('/characters/:CharacterID?', (req, res, next) => {
     const characterID = req.query.CharacterID;
-    let sql = 'UPDATE Characters SET ? WHERE CharacterID = ?';
+    let sql = 'UPDATE characters SET ? WHERE CharacterID = ?';
     const nuevosDatos = req.body;
 
     if(!nuevosDatos || Object.keys(nuevosDatos).length === 0){
@@ -81,7 +82,7 @@ router.put('/characters/:CharacterID?', (req, res, next) => {
         res.status(400).send('Se pide al menos un campo para modificar un personaje');
         return;
     }
-    mysqlConnection.query(sql, [nuevosDatos, characterID], function(err, results, fields){
+    pool.query(sql, [nuevosDatos, characterID], function(err, results, fields){
         if(err){
             res.status(500).json({ error: 'No es posible modificar el personaje' });
             return;
@@ -94,12 +95,12 @@ router.put('/characters/:CharacterID?', (req, res, next) => {
 router.delete('/characters/:CharacterID?', (req, res, next) => {
     try {
         const characterID = req.params.CharacterID;
-        let sql = `DELETE FROM Characters WHERE CharacterID = ${characterID}`;
+        let sql = `DELETE FROM characters WHERE CharacterID = ${characterID}`;
         if(!characterID) { 
             res.status(400).send('Se debe colocar un ID para eliminar un personaje.');
             return;
         }
-        mysqlConnection.query(sql, function(err, results, fields) {
+        pool.execute(sql, function(err, results, fields) {
             console.log(results);
             if(err) {
                 res.status(500).json({ error: 'Error al eliminar el personaje' });
