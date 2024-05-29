@@ -103,7 +103,7 @@ paths:
       tags:
         - Characters
       summary: Update of a existing character
-       parameters:
+      parameters:
         - name: characterId 
           in: path
           description: ID of character to modify
