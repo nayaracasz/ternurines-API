@@ -105,7 +105,7 @@ router.delete('/characters/:CharacterID?', (req, res, next) => {
                 res.status(500).json({ error: 'Error al eliminar el personaje' });
                 return;
             } else {
-                res.send('Registro ${characterID} eliminado correctamente');
+                res.send(`Registro ${characterID} eliminado correctamente`);
             }
         });
     } catch (err) {
