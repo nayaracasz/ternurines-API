@@ -26,9 +26,10 @@ SET time_zone = "+00:00";
 --
 -- Estructura de tabla para la tabla `characters`
 --
+USE defaultdb;
 
 CREATE TABLE `characters` (
-  `CharacterID` int(11) NOT NULL,
+  `CharacterID` int(11) NOT NULL PRIMARY KEY,
   `CharacterName` varchar(50) NOT NULL,
   `FamilyName` varchar(50) NOT NULL,
   `Role` varchar(30) DEFAULT NULL,

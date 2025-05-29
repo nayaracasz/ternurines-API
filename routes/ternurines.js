@@ -8,8 +8,18 @@ const pool = mysql.createPool({
     user: envar.DB_USER,
     password: envar.DB_PASSWORD,
     database: envar.DB_DATABASE,
-    port: envar.DB_PORT
+    port: envar.DB_PORT,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
+
+console.log('envar.DB_HOST: ', envar.DB_HOST);
+console.log('envar.DB_USER: ', envar.DB_USER);
+console.log('envar.DB_PASSWORD: ', envar.DB_PASSWORD);
+console.log('envar.DB_DATABASE: ', envar.DB_DATABASE);
+console.log('envar.DB_PORT: ', envar.DB_PORT);
+
 
 pool.getConnection((err, connection) => {
     if (err) {
