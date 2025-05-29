@@ -10,7 +10,8 @@ const pool = mysql.createPool({
     database: envar.DB_DATABASE,
     port: envar.DB_PORT,
     ssl: {
-        rejectUnauthorized: false
+        rejectUnauthorized: true,
+        ca: envar.DB_SSL_CA
     }
 });
 
