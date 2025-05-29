@@ -4,7 +4,7 @@ const DB_PASSWORD = process.env.MYSQLPASSWORD;
 const DB_PORT = process.env.MYSQLPORT || 3306;
 const DB_HOST = process.env.MYSQLHOST || 'localhost';
 const DB_DATABASE = process.env.MYSQL_DATABASE || 'sylvanianfamilies';
-const DB_SSL_MODE=REQUIRED
+const DB_SSL_MODE='REQUIRED'
 
 module.exports = {
     PORT: PORT,
