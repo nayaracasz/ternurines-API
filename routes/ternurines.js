@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2');
 const envar = require('../src/config.js');
-const fs = require('fs');
 
 const pool = mysql.createPool({
     host: envar.DB_HOST,
@@ -11,8 +10,7 @@ const pool = mysql.createPool({
     database: envar.DB_DATABASE,
     port: envar.DB_PORT,
     ssl: {
-        rejectUnauthorized: true,
-        ca: fs.readFileSync('/etc/secrets/ca.pem')
+        rejectUnauthorized: false
     }
 });
 
