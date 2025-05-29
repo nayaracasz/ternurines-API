@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2');
 const envar = require('../src/config.js');
+const fs = require('fs');
 
 const pool = mysql.createPool({
     host: envar.DB_HOST,
