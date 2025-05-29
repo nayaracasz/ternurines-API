@@ -72,9 +72,13 @@ router.post('/characters', (req, res, next) => {
 })
 
 router.put('/characters/:CharacterID?', (req, res, next) => {
-    const characterID = req.query.CharacterID;
+    const characterID = parseInt(req.params.CharacterID);
     let sql = 'UPDATE characters SET ? WHERE CharacterID = ?';
     const nuevosDatos = req.body;
+
+    if (isNaN(characterID)) {
+        return res.status(400).json({ error: 'ID de personaje inválido' });
+    }
 
     if(!nuevosDatos || Object.keys(nuevosDatos).length === 0){
         console.log(req.body);
