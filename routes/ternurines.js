@@ -75,7 +75,14 @@ router.post('/characters', (req, res, next) => {
                     Description: description,
                     Image: image
                 };
-                res.send(nuevoPersonaje);
+                res.status(201).json({
+                    CharacterID: results.insertId,
+                    CharacterName: name,
+                    FamilyName: family,
+                    Role: role,
+                    Description: description,
+                    Image: image
+                });
             }
         });
     } catch (err) {
