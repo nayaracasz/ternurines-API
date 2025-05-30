@@ -15,13 +15,6 @@ const pool = mysql.createPool({
     }
 });
 
-console.log('envar.DB_HOST: ', envar.DB_HOST);
-console.log('envar.DB_USER: ', envar.DB_USER);
-console.log('envar.DB_PASSWORD: ', envar.DB_PASSWORD);
-console.log('envar.DB_DATABASE: ', envar.DB_DATABASE);
-console.log('envar.DB_PORT: ', envar.DB_PORT);
-
-
 pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error connecting to the database:', err.message);
@@ -74,7 +67,15 @@ router.post('/characters', (req, res, next) => {
                 res.status(500).json({ error: 'No es posible agregar el personaje' });
                 return;
             } else {
-                res.send('Nuevo personaje agregado correctamente');
+                const nuevoPersonaje = {
+                    CharacterID: results.insertId,
+                    CharacterName: name,
+                    FamilyName: family,
+                    Role: role,
+                    Description: description,
+                    Image: image
+                };
+                res.send(nuevoPersonaje);
             }
         });
     } catch (err) {
