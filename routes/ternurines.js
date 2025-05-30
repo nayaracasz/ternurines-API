@@ -52,7 +52,6 @@ router.get('/characters/:CharacterID?', (req, res, next) => {
 });
 
 router.post('/characters', (req, res, next) => {
-    console.log('BODY RECIBIDO:', req.body);
     try {
         const {name, family, role, description, image} = req.body;
         let params = [name, family, role, description, image];
@@ -65,24 +64,13 @@ router.post('/characters', (req, res, next) => {
             console.log(results);
             console.log(fields);
             if(err){
-                console.error('ERROR AL INSERTAR:', err);
                 res.status(500).json({ error: 'No es posible agregar el personaje' });
                 return;
             } else {
-                const nuevoPersonaje = {
-                CharacterID: results.insertId,
-                CharacterName: name,
-                FamilyName: family,
-                Role: role,
-                Description: description,
-                Image: image
-            };
-
-            res.status(201).json(nuevoPersonaje);
+                res.send('Nuevo personaje agregado correctamente');
             }
         });
     } catch (err) {
-        console.error('ERROR INTERNO:', err);
         res.status(500).send(err.code+' / ' + err.message);
     }
 })
