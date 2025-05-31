@@ -37,13 +37,12 @@ router.get('/characters/:CharacterID?', (req, res, next) => {
         pool.execute(
             sql, params,
             function(err, results, fields) {
-                console.log(results);
-                console.log(fields);
                 if(err){
                     res.status(404).json({ error: 'Datos no encontrados' });
                     return;
                 } else {
                     res.send(results);
+                    console.log(`Datos de personaje(s) obtenidos correctamente`);
                 }
             });
     } catch (err) {
@@ -61,8 +60,6 @@ router.post('/characters', (req, res, next) => {
             return;
         }
         pool.execute(sql, params, function(err, results, fields){
-            console.log(results);
-            console.log(fields);
             if(err){
                 res.status(500).json({ error: 'No es posible agregar el personaje' });
                 return;
@@ -85,7 +82,6 @@ router.put('/characters/:CharacterID?', (req, res, next) => {
     }
 
     if(!nuevosDatos || Object.keys(nuevosDatos).length === 0){
-        console.log(req.body);
         res.status(400).send('Se pide al menos un campo para modificar un personaje');
         return;
     }
@@ -108,7 +104,6 @@ router.delete('/characters/:CharacterID?', (req, res, next) => {
             return;
         }
         pool.execute(sql, function(err, results, fields) {
-            console.log(results);
             if(err) {
                 res.status(500).json({ error: 'Error al eliminar el personaje' });
                 return;
