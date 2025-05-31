@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('mysql2');
 const envar = require('../src/config.js');
+const { message } = require('statuses');
 
 const pool = mysql.createPool({
     host: envar.DB_HOST,
@@ -46,7 +47,7 @@ router.get('/characters/:CharacterID?', (req, res, next) => {
                 }
             });
     } catch (err) {
-        res.status(500).send(err.code+' / ' + err.message);
+        res.status(500).json({ error: err.message, code: err.code });
     }
 });
 
@@ -56,7 +57,7 @@ router.post('/characters', (req, res, next) => {
         let params = [name, family, role, description, image];
         let sql = `INSERT INTO characters (CharacterName, FamilyName, Role, Description, Image) values (?, ?, ?, ?, ?)`;
         if(!name || !family || !role || !description || !image){
-            res.status(400).send('Se pide ingresar todos los datos para agregar un nuevo personaje');
+            res.status(400).json({ error: 'Se pide ingresar todos los datos para agregar un nuevo personaje' });
             return;
         }
         pool.execute(sql, params, function(err, results, fields){
@@ -64,11 +65,11 @@ router.post('/characters', (req, res, next) => {
                 res.status(500).json({ error: 'No es posible agregar el personaje' });
                 return;
             } else {
-                res.send('Nuevo personaje agregado correctamente');
+                res.status(201).json({ message: 'Nuevo personaje agregado correctamente', id: results.insertId });
             }
         });
     } catch (err) {
-        res.status(500).send(err.code+' / ' + err.message);
+        res.status(500).json({ error: err.message, code: err.code });
     }
 })
 
@@ -82,7 +83,7 @@ router.put('/characters/:CharacterID?', (req, res, next) => {
     }
 
     if(!nuevosDatos || Object.keys(nuevosDatos).length === 0){
-        res.status(400).send('Se pide al menos un campo para modificar un personaje');
+        res.status(400).json({message: 'Se pide al menos un campo para modificar un personaje'});
         return;
     }
     pool.query(sql, [nuevosDatos, characterID], function(err, results, fields){
@@ -90,7 +91,7 @@ router.put('/characters/:CharacterID?', (req, res, next) => {
             res.status(500).json({ error: 'No es posible modificar el personaje' });
             return;
         } else {
-            res.send(`Personaje ${characterID} modificado correctamente`);
+            res.status(201).json({ message: `Personaje ${characterID} modificado correctamente` });
         }
     })
 })
@@ -100,7 +101,7 @@ router.delete('/characters/:CharacterID?', (req, res, next) => {
         const characterID = req.params.CharacterID;
         let sql = `DELETE FROM characters WHERE CharacterID = ${characterID}`;
         if(!characterID) { 
-            res.status(400).send('Se debe colocar un ID para eliminar un personaje.');
+            res.status(400).json({message: 'Se debe colocar un ID para eliminar un personaje.'});
             return;
         }
         pool.execute(sql, function(err, results, fields) {
@@ -108,11 +109,11 @@ router.delete('/characters/:CharacterID?', (req, res, next) => {
                 res.status(500).json({ error: 'Error al eliminar el personaje' });
                 return;
             } else {
-                res.send(`Registro ${characterID} eliminado correctamente`);
+                res.status(201).json({ message: `Registro ${characterID} eliminado correctamente` });
             }
         });
     } catch (err) {
-        res.status(500).send(err.code+' / ' + err.message);
+        res.status(500).json({ error: err.message, code: err.code });
     }
 });
 
