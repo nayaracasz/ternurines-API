@@ -65,7 +65,15 @@ router.post('/characters', (req, res, next) => {
                 res.status(500).json({ error: 'No es posible agregar el personaje' });
                 return;
             } else {
-                res.status(201).json({ message: 'Nuevo personaje agregado correctamente', id: results.insertId });
+                const createdTernurin = {
+                    CharacterID: results.insertId,
+                    CharacterName: name,
+                    FamilyName: family,
+                    Role: role,
+                    Description: description,
+                    Image: image
+                };
+                res.status(201).json(createdTernurin);
             }
         });
     } catch (err) {
